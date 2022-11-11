@@ -37,16 +37,12 @@ frontend www-http
         mode http
         default_backend web-backend
 frontend www-https
-    bind *:443 ssl crt /etc/haproxy/jessemaikarfi.tech.pem
-    http-request set-header X-Forwarded-Proto https
-    acl letsencrypt-acl path_beg /.well-known/acme-challenge/
-    use_backend letsencrypt-backend if letsencrypt-acl
-    default_backend web-backend
+        bind *:443 ssl crt /etc/ssl/www.jessemaikarfi.tech/www.jessemaikarfi.tech.pem
+        http-request set-header X-Forwarded-Proto https
+        default_backend web-backend
 
 backend web-backend
         redirect scheme https unless { ssl_fc }
         balance roundrobin
-        server 4848-web-01 50.17.122.90 check
-backend letsencrypt-backend
-    server letsencrypt 127.0.0.1:54321
-                                        
+        server 4848-web-01 50.17.122.90:80 check
+        server 4848-web-02 54.221.129.32:80 check
